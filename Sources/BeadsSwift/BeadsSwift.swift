@@ -33,8 +33,8 @@ public struct BeadsSequence {
     public init() {}
 
     public mutating func append(_ newElement: UInt8?) {
-        let flag = newElement == nil ? BeadType._nil.rawValue : BeadType.u8.rawValue
-        set(flag: flag)
+        let flag = newElement == nil ? BeadType._nil : BeadType.u8
+        set(beadType: flag)
         if let newElement = newElement {
             buffer.append(newElement)
         }
@@ -42,92 +42,92 @@ public struct BeadsSequence {
 
     public mutating func append(_ newElement: UInt16?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
         if let u8 = UInt8(exactly: newElement) {
-            set(flag: BeadType.u8.rawValue)
+            set(beadType: BeadType.u8)
             put(int: u8)
             return
         }
 
-        set(flag: BeadType.u16.rawValue)
+        set(beadType: BeadType.u16)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: UInt32?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
         if let u8 = UInt8(exactly: newElement) {
-            set(flag: BeadType.u8.rawValue)
+            set(beadType: BeadType.u8)
             put(int: u8)
             return
         }
         if let u16 = UInt16(exactly: newElement) {
-            set(flag: BeadType.u16.rawValue)
+            set(beadType: BeadType.u16)
             put(int: u16)
             return
         }
 
-        set(flag: BeadType.u32.rawValue)
+        set(beadType: BeadType.u32)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: UInt64?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
         if let u8 = UInt8(exactly: newElement) {
-            set(flag: BeadType.u8.rawValue)
+            set(beadType: BeadType.u8)
             put(int: u8)
             return
         }
         if let u16 = UInt16(exactly: newElement) {
-            set(flag: BeadType.u16.rawValue)
+            set(beadType: BeadType.u16)
             put(int: u16)
             return
         }
         if let u32 = UInt32(exactly: newElement) {
-            set(flag: BeadType.u32.rawValue)
+            set(beadType: BeadType.u32)
             put(int: u32)
             return
         }
 
-        set(flag: BeadType.u64.rawValue)
+        set(beadType: BeadType.u64)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: UInt?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
         if let u8 = UInt8(exactly: newElement) {
-            set(flag: BeadType.u8.rawValue)
+            set(beadType: BeadType.u8)
             put(int: u8)
             return
         }
         if let u16 = UInt16(exactly: newElement) {
-            set(flag: BeadType.u16.rawValue)
+            set(beadType: BeadType.u16)
             put(int: u16)
             return
         }
         if let u32 = UInt32(exactly: newElement) {
-            set(flag: BeadType.u32.rawValue)
+            set(beadType: BeadType.u32)
             put(int: u32)
             return
         }
 
-        set(flag: BeadType.u64.rawValue)
+        set(beadType: BeadType.u64)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: Int8?) {
-        let flag = newElement == nil ? BeadType._nil.rawValue : BeadType.i8.rawValue
-        set(flag: flag)
+        let flag = newElement == nil ? BeadType._nil : BeadType.i8
+        set(beadType: flag)
         if let newElement = newElement {
             buffer.append(UInt8(bitPattern: newElement))
         }
@@ -135,7 +135,7 @@ public struct BeadsSequence {
 
     public mutating func append(_ newElement: Int16?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
         if let u16 = UInt16(exactly: newElement) {
@@ -147,13 +147,13 @@ public struct BeadsSequence {
             return
         }
 
-        set(flag: BeadType.i16.rawValue)
+        set(beadType: BeadType.i16)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: Int32?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
 
@@ -163,24 +163,24 @@ public struct BeadsSequence {
         }
 
         if let i8 = Int8(exactly: newElement) {
-            set(flag: BeadType.i8.rawValue)
+            set(beadType: BeadType.i8)
             put(int: i8)
             return
         }
 
         if let i16 = Int16(exactly: newElement) {
-            set(flag: BeadType.i16.rawValue)
+            set(beadType: BeadType.i16)
             put(int: i16)
             return
         }
 
-        set(flag: BeadType.i32.rawValue)
+        set(beadType: BeadType.i32)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: Int64?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
 
@@ -190,30 +190,30 @@ public struct BeadsSequence {
         }
 
         if let i8 = Int8(exactly: newElement) {
-            set(flag: BeadType.i8.rawValue)
+            set(beadType: BeadType.i8)
             put(int: i8)
             return
         }
 
         if let i16 = Int16(exactly: newElement) {
-            set(flag: BeadType.i16.rawValue)
+            set(beadType: BeadType.i16)
             put(int: i16)
             return
         }
 
         if let i32 = Int32(exactly: newElement) {
-            set(flag: BeadType.i32.rawValue)
+            set(beadType: BeadType.i32)
             put(int: i32)
             return
         }
 
-        set(flag: BeadType.i64.rawValue)
+        set(beadType: BeadType.i64)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: Int?) {
         guard let newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
 
@@ -223,30 +223,30 @@ public struct BeadsSequence {
         }
 
         if let i8 = Int8(exactly: newElement) {
-            set(flag: BeadType.i8.rawValue)
+            set(beadType: BeadType.i8)
             put(int: i8)
             return
         }
 
         if let i16 = Int16(exactly: newElement) {
-            set(flag: BeadType.i16.rawValue)
+            set(beadType: BeadType.i16)
             put(int: i16)
             return
         }
 
         if let i32 = Int32(exactly: newElement) {
-            set(flag: BeadType.i32.rawValue)
+            set(beadType: BeadType.i32)
             put(int: i32)
             return
         }
 
-        set(flag: BeadType.i64.rawValue)
+        set(beadType: BeadType.i64)
         put(int: newElement)
     }
 
     public mutating func append(_ newElement: Float32?) {
         guard var newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
 
@@ -256,12 +256,12 @@ public struct BeadsSequence {
         }
 
         if let u32 = UInt32(exactly: newElement) {
-            set(flag: BeadType.u32.rawValue)
+            set(beadType: BeadType.u32)
             put(int: u32)
             return
         }
 
-        set(flag: BeadType.f32.rawValue)
+        set(beadType: BeadType.f32)
         withUnsafeBytes(of: &newElement) {
             buffer.append($0[0])
             buffer.append($0[1])
@@ -272,7 +272,7 @@ public struct BeadsSequence {
 
     public mutating func append(_ newElement: Float64?) {
         guard var newElement = newElement else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
 
@@ -282,13 +282,13 @@ public struct BeadsSequence {
         }
 
         if let u64 = UInt64(exactly: newElement) {
-            set(flag: BeadType.u64.rawValue)
+            set(beadType: BeadType.u64)
             put(int: u64)
             return
         }
 
         if var f32 = Float32(exactly: newElement) {
-            set(flag: BeadType.f32.rawValue)
+            set(beadType: BeadType.f32)
             withUnsafeBytes(of: &f32) {
                 buffer.append($0[0])
                 buffer.append($0[1])
@@ -298,7 +298,7 @@ public struct BeadsSequence {
             return
         }
 
-        set(flag: BeadType.f64.rawValue)
+        set(beadType: BeadType.f64)
         withUnsafeBytes(of: &newElement) {
             buffer.append($0[0])
             buffer.append($0[1])
@@ -313,7 +313,7 @@ public struct BeadsSequence {
 
     public mutating func append(_ sequence: BeadsSequence?, withSkip: Bool = true) {
         guard let sequence = sequence else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
         if elementCount % 2 == 0 {
@@ -322,7 +322,7 @@ public struct BeadsSequence {
             self.elementCount += sequence.elementCount
         } else {
             if withSkip {
-                set(flag: BeadType.skip.rawValue)
+                set(beadType: BeadType.skip)
                 self.typeFlagIndex = self.buffer.count + sequence.typeFlagIndex
                 self.buffer.append(contentsOf: sequence.buffer)
                 self.elementCount += sequence.elementCount
@@ -336,10 +336,10 @@ public struct BeadsSequence {
 
     public mutating func append(_ data: Data?) {
         guard let data = data else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
-        set(flag: BeadType.buffer.rawValue)
+        set(beadType: BeadType.buffer)
         append(data.count)
         self.buffer.append(contentsOf: data)
     }
@@ -351,10 +351,10 @@ public struct BeadsSequence {
 
     public mutating func appendCompact(_ data: Data?) {
         guard let data = data else {
-            set(flag: BeadType._nil.rawValue)
+            set(beadType: BeadType._nil)
             return
         }
-        set(flag: BeadType.compact_buffer.rawValue)
+        set(beadType: BeadType.compact_buffer)
         var compact_data = [UInt8]()
         var flagCursor = 0
         for (index, byte) in data.enumerated() {
@@ -371,21 +371,21 @@ public struct BeadsSequence {
 
         if let size = UInt8(exactly: compact_data.count),
             let count = UInt8(exactly: data.count) {
-            set(flag: BeadType.u8.rawValue)
+            set(beadType: BeadType.u8)
             put(int: size)
             put(int: count)
         } else if let size = UInt16(exactly: data.count),
             let count = UInt16(exactly: compact_data.count) {
-            set(flag: BeadType.u16.rawValue)
+            set(beadType: BeadType.u16)
             put(int: size)
             put(int: count)
         } else if let size = UInt32(exactly: data.count),
             let count = UInt32(exactly: compact_data.count) {
-            set(flag: BeadType.u32.rawValue)
+            set(beadType: BeadType.u32)
             put(int: size)
             put(int: count)
         } else {
-            set(flag: BeadType.u64.rawValue)
+            set(beadType: BeadType.u64)
             put(int: UInt64(data.count))
             put(int: UInt64(compact_data.count))
         }
@@ -465,7 +465,8 @@ public struct BeadsSequence {
         }
     }
 
-    private mutating func set(flag: UInt8){
+    private mutating func set(beadType: BeadType) {
+        let flag = beadType.rawValue
         if elementCount % 2 == 0 {
             typeFlagIndex = buffer.count
             buffer.append(flag)
