@@ -206,6 +206,36 @@ final class BeadsSwiftTests: XCTestCase {
             ])
     }
 
+    func testAppendF32WithDeviation() {
+        var sequence = BeadsSequence()
+
+        let values: [Float32?] = [
+            -1, 0,
+            nil, 250,
+            -129, Float32(UInt16.max),
+            Float32(Int32.min), Float32(UInt32.max),
+            Float32(Int64.min), Float32(Int32.max),
+            .nan, -.nan,
+            .infinity, -.infinity,
+            1.3, -7.5
+        ]
+        for v in values {
+            sequence.append(v, deviation: 0.001)
+        }
+
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            43, 16,
+            tag(.i8, .u8), 255, 0,
+            tag(._nil, .u8), 250,
+            tag(.i16, .u16), 127, 255, 255, 255,
+            tag(.f32, .f32), 0, 0, 0, 207, 0, 0, 128, 79,
+            tag(.f32, .f32), 0, 0, 0, 223, 0, 0, 0, 79,
+            tag(.f16, .f16), 1, 124, 1, 124,
+            tag(.f16, .f16), 0, 124, 0, 252,
+            tag(.f16, .f16), 51, 61, 128, 199
+            ])
+    }
+
     func testAppendF64() {
         var sequence = BeadsSequence()
 
@@ -222,17 +252,17 @@ final class BeadsSwiftTests: XCTestCase {
         }
 
         XCTAssertEqual(sequence.toData().map{ $0 }, [
-            41, 12,
+            39, 12,
             tag(.i8, .u8), 255, 0,
             tag(._nil, .u8), 250,
             tag(.i16, .u16), 127, 255, 255, 255,
             tag(.i32, .u32), 0, 0, 0, 128, 255, 255, 255, 255,
             tag(.f32, .u32), 0, 0, 0, 223, 255, 255, 255, 127,
-            tag(.f32, .f64), 0, 0, 128, 127, 154, 153, 153, 153, 153, 153, 241, 63
+            tag(.f16, .f64), 0, 124, 154, 153, 153, 153, 153, 153, 241, 63
             ])
     }
 
-    func testAppendF64WithDelta() {
+    func testAppendF64WithDeviation() {
         var sequence = BeadsSequence()
 
         let values: [Float64?] = [
@@ -244,17 +274,17 @@ final class BeadsSwiftTests: XCTestCase {
             Float64(Float32.infinity), 1.1
         ]
         for v in values {
-            sequence.append(v, delta: 0.001)
+            sequence.append(v, deviation: 0.001)
         }
 
         XCTAssertEqual(sequence.toData().map{ $0 }, [
-            37, 12,
+            33, 12,
             tag(.i8, .u8), 255, 0,
             tag(._nil, .u8), 250,
             tag(.i16, .u16), 127, 255, 255, 255,
             tag(.i32, .u32), 0, 0, 0, 128, 255, 255, 255, 255,
             tag(.f32, .u32), 0, 0, 0, 223, 255, 255, 255, 127,
-            tag(.f32, .f32), 0, 0, 128, 127, 205, 204, 140, 63
+            tag(.f16, .f16), 0, 124, 102, 60
             ])
     }
 
@@ -612,6 +642,28 @@ final class BeadsSwiftTests: XCTestCase {
             ])
     }
 
+    func testHalfPrecision() {
+        var sequence = BeadsSequence()
+        sequence.append(0.1, deviation: 0.01)
+        sequence.append(-0.1, deviation: 0.01)
+        sequence.append(Float32(-0.3), deviation: 0.01)
+        sequence.append(Double.infinity)
+        sequence.append(-Double.infinity)
+
+        XCTAssertEqual(sequence.map { $0.double }, [0.0999755859375, -0.0999755859375, -0.2998046875, Double.infinity, -Double.infinity])
+    }
+
+    func testHalfPrecisionNan() {
+        var sequence = BeadsSequence()
+        sequence.append(Double.nan)
+        sequence.append(Double.nan)
+
+        let values = sequence.map { $0.double }
+
+        XCTAssertTrue(values[0]!.isNaN)
+        XCTAssertTrue(values[1]!.isNaN)
+    }
+
     func testToData() {
         var sequence = BeadsSequence()
         let names = ["Max", "Alex", nil, "Maxim", "👻"]
@@ -715,8 +767,61 @@ final class BeadsSwiftTests: XCTestCase {
         XCTAssertEqual(sum, 6984569350)
     }
 
+//    func testExportNames() {
+//        var methodCount: UInt32 = 0
+//        let list = class_copyMethodList(BeadsSwiftTests.self, &methodCount)
+//        for i in 0..<methodCount {
+//            let method = list!.advanced(by: Int(i)).pointee
+//            let methodName = method_getName(method).description
+//            if methodName.starts(with: "test") {
+//                print(
+//                    """
+//                    ("\(methodName)", \(methodName)),
+//                    """
+//                )
+//            }
+//        }
+//    }
+
 
     static var allTests = [
+        ("testAppendCompactData", testAppendCompactData),
+        ("testToUInt64", testToUInt64),
+        ("testAppendU64", testAppendU64),
+        ("testSequenceU16ToInt", testSequenceU16ToInt),
+        ("testSequenceI16ToInt", testSequenceI16ToInt),
+        ("testSequenceU32ToInt", testSequenceU32ToInt),
+        ("testF32ToInt", testF32ToInt),
+        ("testAppendF32", testAppendF32),
+        ("testAppendLongCompactData", testAppendLongCompactData),
+        ("testToInt64", testToInt64),
+        ("testAppendU16", testAppendU16),
         ("testAppendU8", testAppendU8),
+        ("testAppendF32WithDeviation", testAppendF32WithDeviation),
+        ("testSequenceU8AndI8ToInt", testSequenceU8AndI8ToInt),
+        ("testF64ToInt", testF64ToInt),
+        ("testToData", testToData),
+        ("testAppendU32", testAppendU32),
+        ("testSequenceI32ToInt", testSequenceI32ToInt),
+        ("testSequenceU64ToInt", testSequenceU64ToInt),
+        ("testSequenceU64ToIntStillRepresentable", testSequenceU64ToIntStillRepresentable),
+        ("testSequenceI64ToInt", testSequenceI64ToInt),
+        ("testAppendData", testAppendData),
+        ("testAppendUInt", testAppendUInt),
+        ("testToDouble", testToDouble),
+        ("testAppendF64", testAppendF64),
+        ("testAppendF64WithDeviation", testAppendF64WithDeviation),
+        ("testAppendI8", testAppendI8),
+        ("testAppendInt", testAppendInt),
+        ("testAppendI16", testAppendI16),
+        ("testHalfPrecision", testHalfPrecision),
+        ("testHalfPrecisionNan", testHalfPrecisionNan),
+        ("testToCompactData", testToCompactData),
+        ("testAppendLargeAmountOfItems", testAppendLargeAmountOfItems),
+        ("testPerformanceExample", testPerformanceExample),
+        ("testPerformanceComaprison", testPerformanceComaprison),
+        ("testAppendCompactDataWithIntArray", testAppendCompactDataWithIntArray),
+        ("testAppendI64", testAppendI64),
+        ("testAppendI32", testAppendI32),
     ]
 }

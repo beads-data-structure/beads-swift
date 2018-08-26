@@ -13,6 +13,7 @@ public struct BeadsSequence {
         case u64 = 0b0000_1000 // 8
         case i64 = 0b0000_1001 // 9
         case f64 = 0b0000_1010 // 10
+        case f16 = 0b0000_1011 // 11
 
         case compact_buffer = 0b0000_1101 // 13
         case buffer = 0b0000_1110 // 14
@@ -244,9 +245,29 @@ public struct BeadsSequence {
         put(int: newElement)
     }
 
-    public mutating func append(_ newElement: Float32?) {
+    public mutating func append(_ newElement: Float32?, deviation: Float32 = 0) {
         guard var newElement = newElement else {
             set(beadType: BeadType._nil)
+            return
+        }
+
+        if newElement.isNaN {
+            var f16 = toHalfPrecision(value: newElement > 0 ? Float32.nan : -Float32.nan)
+            set(beadType: BeadType.f16)
+            withUnsafeBytes(of: &f16) {
+                buffer.append($0[0])
+                buffer.append($0[1])
+            }
+            return
+        }
+
+        if newElement.isInfinite {
+            var f16 = toHalfPrecision(value: newElement > 0 ? Float32.infinity : -Float32.infinity)
+            set(beadType: BeadType.f16)
+            withUnsafeBytes(of: &f16) {
+                buffer.append($0[0])
+                buffer.append($0[1])
+            }
             return
         }
 
@@ -261,6 +282,18 @@ public struct BeadsSequence {
             return
         }
 
+        if deviation != 0 {
+            var half = toHalfPrecision(value: newElement)
+            if abs(newElement - fromHalfPrecision(value: half)) <= deviation {
+                set(beadType: BeadType.f16)
+                withUnsafeBytes(of: &half) {
+                    buffer.append($0[0])
+                    buffer.append($0[1])
+                }
+                return
+            }
+        }
+
         set(beadType: BeadType.f32)
         withUnsafeBytes(of: &newElement) {
             buffer.append($0[0])
@@ -270,32 +303,28 @@ public struct BeadsSequence {
         }
     }
 
-    public mutating func append(_ newElement: Float64?, delta: Float64 = 0) {
+    public mutating func append(_ newElement: Float64?, deviation: Float64 = 0) {
         guard var newElement = newElement else {
             set(beadType: BeadType._nil)
             return
         }
 
         if newElement.isNaN {
-            var f32 = Float32.nan
-            set(beadType: BeadType.f32)
-            withUnsafeBytes(of: &f32) {
+            var f16 = toHalfPrecision(value: newElement > 0 ? Float32.nan : -Float32.nan)
+            set(beadType: BeadType.f16)
+            withUnsafeBytes(of: &f16) {
                 buffer.append($0[0])
                 buffer.append($0[1])
-                buffer.append($0[2])
-                buffer.append($0[3])
             }
             return
         }
 
         if newElement.isInfinite {
-            var f32 = Float32.infinity
-            set(beadType: BeadType.f32)
-            withUnsafeBytes(of: &f32) {
+            var f16 = toHalfPrecision(value: newElement > 0 ? Float32.infinity : -Float32.infinity)
+            set(beadType: BeadType.f16)
+            withUnsafeBytes(of: &f16) {
                 buffer.append($0[0])
                 buffer.append($0[1])
-                buffer.append($0[2])
-                buffer.append($0[3])
             }
             return
         }
@@ -311,7 +340,7 @@ public struct BeadsSequence {
             return
         }
 
-        if delta == 0 {
+        if deviation == 0 {
             if var f32 = Float32(exactly: newElement) {
                 set(beadType: BeadType.f32)
                 withUnsafeBytes(of: &f32) {
@@ -324,7 +353,16 @@ public struct BeadsSequence {
             }
         } else {
             var f32 = Float32(newElement)
-            if abs(newElement - Float64(f32)) <= delta {
+            var half = toHalfPrecision(value: f32)
+            if abs(newElement - Float64(f32)) <= deviation {
+                if abs(newElement - Double(fromHalfPrecision(value: half))) <= deviation {
+                    set(beadType: BeadType.f16)
+                    withUnsafeBytes(of: &half) {
+                        buffer.append($0[0])
+                        buffer.append($0[1])
+                    }
+                    return
+                }
                 set(beadType: BeadType.f32)
                 withUnsafeBytes(of: &f32) {
                     buffer.append($0[0])
@@ -845,6 +883,13 @@ extension BeadsSequence {
                     result = ._nil
                 }
 
+            case .f16:
+                if let value: UInt16 = readValue() {
+                    result = Bead.f32(fromHalfPrecision(value: value))
+                } else {
+                    result = ._nil
+                }
+
             case .u32:
                 if let value: UInt32 = readValue() {
                     result = Bead.u32(value)
@@ -1042,4 +1087,38 @@ extension BeadsSequence {
     public func beadsConvertibleSequence<T: BeadsConvertible>(for type: T.Type) -> BeadsConvertibleSequence<T> {
         return BeadsConvertibleSequence<T>(iterator: self.makeIterator())
     }
+}
+
+fileprivate func toHalfPrecision(value: Float32) -> UInt16 {
+    if value.isNaN {
+        return 0b0_11111_0000000001
+    }
+    if value.isInfinite {
+        return value > 0 ? 0b0_11111_0000000000 : 0b1_11111_0000000000
+    }
+
+    let bitPattern = value.bitPattern
+    let sign = UInt16((bitPattern >> 16) & 0x8000)
+    let expo = UInt16((((bitPattern & 0x7f800000) - 0x38000000) >> 13) & 0x7c00)
+    let mant = UInt16((bitPattern >> 13) & 0x03ff)
+
+    return (sign | expo | mant)
+}
+
+fileprivate func fromHalfPrecision(value: UInt16) -> Float32 {
+    if value == 0b0_11111_0000000001 {
+        return Float32.nan
+    }
+    if value == 0b0_11111_0000000000 {
+        return Float32.infinity
+    }
+    if value == 0b1_11111_0000000000 {
+        return -Float32.infinity
+    }
+    let sign = UInt32(value & 0x8000) << 16
+    let expo = (UInt32(value & 0x7c00) + 0x1C000) << 13
+    let mant = UInt32(value & 0x03FF) << 13
+
+    let bitPattern = (sign | expo | mant)
+    return Float32(bitPattern: bitPattern)
 }
