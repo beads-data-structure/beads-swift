@@ -232,6 +232,32 @@ final class BeadsSwiftTests: XCTestCase {
             ])
     }
 
+    func testAppendF64WithDelta() {
+        var sequence = BeadsSequence()
+
+        let values: [Float64?] = [
+            -1, 0,
+            nil, 250,
+            -129, Float64(UInt16.max),
+            Float64(Int32.min), Float64(UInt32.max),
+            Float64(Int64.min), Float64(Int32.max),
+            Float64(Float32.infinity), 1.1
+        ]
+        for v in values {
+            sequence.append(v, delta: 0.001)
+        }
+
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            37, 12,
+            tag(.i8, .u8), 255, 0,
+            tag(._nil, .u8), 250,
+            tag(.i16, .u16), 127, 255, 255, 255,
+            tag(.i32, .u32), 0, 0, 0, 128, 255, 255, 255, 255,
+            tag(.f32, .u32), 0, 0, 0, 223, 255, 255, 255, 127,
+            tag(.f32, .f32), 0, 0, 128, 127, 205, 204, 140, 63
+            ])
+    }
+
     func tag(_ b1: BeadsSequence.BeadType, _ b2: BeadsSequence.BeadType) -> UInt8 {
         return b1.rawValue | (b2.rawValue << 4)
     }

@@ -270,9 +270,33 @@ public struct BeadsSequence {
         }
     }
 
-    public mutating func append(_ newElement: Float64?) {
+    public mutating func append(_ newElement: Float64?, delta: Float64 = 0) {
         guard var newElement = newElement else {
             set(beadType: BeadType._nil)
+            return
+        }
+
+        if newElement.isNaN {
+            var f32 = Float32.nan
+            set(beadType: BeadType.f32)
+            withUnsafeBytes(of: &f32) {
+                buffer.append($0[0])
+                buffer.append($0[1])
+                buffer.append($0[2])
+                buffer.append($0[3])
+            }
+            return
+        }
+
+        if newElement.isInfinite {
+            var f32 = Float32.infinity
+            set(beadType: BeadType.f32)
+            withUnsafeBytes(of: &f32) {
+                buffer.append($0[0])
+                buffer.append($0[1])
+                buffer.append($0[2])
+                buffer.append($0[3])
+            }
             return
         }
 
@@ -287,15 +311,29 @@ public struct BeadsSequence {
             return
         }
 
-        if var f32 = Float32(exactly: newElement) {
-            set(beadType: BeadType.f32)
-            withUnsafeBytes(of: &f32) {
-                buffer.append($0[0])
-                buffer.append($0[1])
-                buffer.append($0[2])
-                buffer.append($0[3])
+        if delta == 0 {
+            if var f32 = Float32(exactly: newElement) {
+                set(beadType: BeadType.f32)
+                withUnsafeBytes(of: &f32) {
+                    buffer.append($0[0])
+                    buffer.append($0[1])
+                    buffer.append($0[2])
+                    buffer.append($0[3])
+                }
+                return
             }
-            return
+        } else {
+            var f32 = Float32(newElement)
+            if abs(newElement - Float64(f32)) <= delta {
+                set(beadType: BeadType.f32)
+                withUnsafeBytes(of: &f32) {
+                    buffer.append($0[0])
+                    buffer.append($0[1])
+                    buffer.append($0[2])
+                    buffer.append($0[3])
+                }
+                return
+            }
         }
 
         set(beadType: BeadType.f64)
