@@ -392,62 +392,131 @@ public struct BeadsSequence {
         self.buffer.append(contentsOf: compact_data)
     }
 
-    public var data: Data {
+    public mutating func toData() -> Data {
+        while buffer.count == elementCount {
+            set(beadType: .skip)
+        }
+
         var data: Data
-        if Swift.max(buffer.count, elementCount) <= UInt16.max {
-            let sizeInt = 4 + buffer.count
-            data = Data(capacity: sizeInt)
-            var size = UInt16(sizeInt)
-            withUnsafeBytes(of: &size) {
-                data.append($0[0])
-                data.append($0[1])
+        if buffer.count <= Int8.max {
+            data = Data(capacity: buffer.count + 2)
+            var size = UInt8(buffer.count)
+            var count = UInt8(elementCount)
+            if isLittleEndianArch {
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                }
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                }
+            } else {
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                }
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                }
             }
+        } else if buffer.count <= Int16.max {
+            data = Data(capacity: buffer.count + 4)
+            var size = UInt16(buffer.count)
             var count = UInt16(elementCount)
-            withUnsafeBytes(of: &count) {
-                data.append($0[0])
-                data.append($0[1])
+            if isLittleEndianArch {
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                    data.append($0[1])
+                }
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                    data.append($0[1])
+                }
+            } else {
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                    data.append($0[1])
+                }
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                    data.append($0[1])
+                }
             }
-        } else if Swift.max(buffer.count, elementCount) <= UInt32.max {
-            let sizeInt = 8 + buffer.count
-            data = Data(capacity: sizeInt)
-            var size = UInt32(sizeInt)
-            withUnsafeBytes(of: &size) {
-                data.append($0[0])
-                data.append($0[1])
-                data.append($0[2])
-                data.append($0[3])
-            }
+        } else if buffer.count <= Int32.max {
+            data = Data(capacity: buffer.count + 8)
+            var size = UInt32(buffer.count)
             var count = UInt32(elementCount)
-            withUnsafeBytes(of: &count) {
-                data.append($0[0])
-                data.append($0[1])
-                data.append($0[2])
-                data.append($0[3])
+            if isLittleEndianArch {
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                }
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                }
+            } else {
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                }
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                }
             }
         } else {
-            let sizeInt = 16 + buffer.count
-            data = Data(capacity: sizeInt)
-            var size = UInt64(sizeInt)
-            withUnsafeBytes(of: &size) {
-                data.append($0[0])
-                data.append($0[1])
-                data.append($0[2])
-                data.append($0[3])
-                data.append($0[4])
-                data.append($0[5])
-                data.append($0[6])
-                data.append($0[7])
-            }
+            data = Data(capacity: buffer.count + 16)
+            var size = UInt64(buffer.count)
             var count = UInt64(elementCount)
-            withUnsafeBytes(of: &count) {
-                data.append($0[0])
-                data.append($0[1])
-                data.append($0[2])
-                data.append($0[3])
-                data.append($0[4])
-                data.append($0[5])
-                data.append($0[6])
-                data.append($0[7])
+            if isLittleEndianArch {
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                    data.append($0[4])
+                    data.append($0[5])
+                    data.append($0[6])
+                    data.append($0[7])
+                }
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                    data.append($0[4])
+                    data.append($0[5])
+                    data.append($0[6])
+                    data.append($0[7])
+                }
+            } else {
+                withUnsafeBytes(of: &count) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                    data.append($0[4])
+                    data.append($0[5])
+                    data.append($0[6])
+                    data.append($0[7])
+                }
+                withUnsafeBytes(of: &size) {
+                    data.append($0[0])
+                    data.append($0[1])
+                    data.append($0[2])
+                    data.append($0[3])
+                    data.append($0[4])
+                    data.append($0[5])
+                    data.append($0[6])
+                    data.append($0[7])
+                }
             }
         }
 
@@ -478,6 +547,7 @@ public struct BeadsSequence {
 }
 
 let is32Arch = MemoryLayout<Int>.alignment == 4
+let isLittleEndianArch = 300 == 300.littleEndian
 
 extension BeadsSequence {
     public enum Bead {
@@ -867,18 +937,23 @@ extension BeadsSequence {
     }
 
     public static func from(data: Data) throws -> BeadsSequence {
+        guard data.count > 2 else {
+            throw ConversionError.UnexpecetdData
+        }
         var result = BeadsSequence()
         func setup<T: UnsignedInteger>(_ type: T.Type) throws {
             let (dataSize, elementCount) = data.withUnsafeBytes { (p: UnsafePointer<T>) in
                 (p.pointee, p.advanced(by: 1).pointee)
             }
-            guard Int(dataSize) == data.count else {
+            guard (Int(dataSize) + MemoryLayout<T>.alignment * 2) == data.count else {
                 throw ConversionError.UnexpecetdData
             }
             result.elementCount = Int(elementCount)
             result.buffer = data.advanced(by: MemoryLayout<T>.alignment * 2).map {$0}
         }
-        if data.count <= (UInt16.max >> 1) {
+        if (data.count - 2) <= Int8.max {
+            try setup(UInt8.self)
+        } else if (data.count - 4) <= Int16.max {
             try setup(UInt16.self)
         } else if data.count <= (UInt32.max >> 1) {
             try setup(UInt32.self)

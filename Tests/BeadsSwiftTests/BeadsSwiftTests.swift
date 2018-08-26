@@ -15,13 +15,12 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map { $0 }, [
-            12, 0,
-            8, 0,
+        XCTAssertEqual(sequence.toData().map { $0 }, [
+            9, 10,
             0b00010001, 12, 14,
             0b00011111, 4,
             0b11110001, 45,
-            0b11111111
+            0b11111111, 0
             ])
     }
 
@@ -32,9 +31,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            15, 0,
-            8, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            11, 8,
             0b00010001, 12, 14,
             0b00111111, 144, 1,
             0b11110011, 194, 1,
@@ -49,9 +47,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            15, 0,
-            5, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            11, 5,
             0b11110001, 12,
             0b00010011, 144, 1, 0,
             0b00000101, 255, 255, 255, 255
@@ -65,9 +62,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            23, 0,
-            6, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            19, 6,
             0b11110001, 12,
             0b00010011, 144, 1, 0,
             0b10000101, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
@@ -81,9 +77,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            23, 0,
-            6, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            19, 6,
             0b11110001, 12,
             0b00010011, 144, 1, 0,
             0b10000101, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
@@ -98,9 +93,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            11, 0,
-            5, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            7, 5,
             0b00100010, 255, 0,
             0b00101111, 252,
             0b00000010, 45
@@ -115,9 +109,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            12, 0,
-            5, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            8, 5,
             0b00010010, 255, 0,
             0b00011111, 250,
             0b00000100, 127, 255
@@ -132,9 +125,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            19, 0,
-            7, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            15, 7,
             0b00010010, 255, 0,
             0b00011111, 250,
             0b00110100, 127, 255, 255, 255,
@@ -156,9 +148,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            36, 0,
-            10, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            32, 10,
             0b0001_0010, 255, 0,
             0b0001_1111, 250,
             0b0011_0100, 127, 255, 255, 255,
@@ -181,9 +172,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            36, 0,
-            10, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            32, 10,
             0b0001_0010, 255, 0,
             0b0001_1111, 250,
             0b0011_0100, 127, 255, 255, 255,
@@ -206,9 +196,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            32, 0,
-            10, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            28, 10,
             0b0001_0010, 255, 0,
             0b0001_1111, 250,
             0b0011_0100, 127, 255, 255, 255,
@@ -232,9 +221,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.append(v)
         }
 
-        XCTAssertEqual(sequence.data.map{ $0 }, [
-            49, 0,
-            12, 0,
+        XCTAssertEqual(sequence.toData().map{ $0 }, [
+            45, 12,
             0b0001_0010, 255, 0,
             0b0001_1111, 250,
             0b0011_0100, 127, 255, 255, 255,
@@ -251,9 +239,8 @@ final class BeadsSwiftTests: XCTestCase {
         sequence.append(7)
         sequence.append("Maxim".data(using: .unicode))
 
-        XCTAssertEqual(sequence.data.map { $0 }, [
-            35, 0,
-            7, 0,
+        XCTAssertEqual(sequence.toData().map { $0 }, [
+            31, 7,
             0b0001_1110, 3, 77, 97, 120,
             0b0001_1110, 8, 255, 254, 77, 0, 97, 0, 120, 0,
             0b1110_0001, 7,
@@ -268,9 +255,8 @@ final class BeadsSwiftTests: XCTestCase {
         sequence.append(7)
         sequence.appendCompact("Maxim".data(using: .unicode))
 
-        XCTAssertEqual(sequence.data.map { $0 }, [
-            34, 0,
-            7, 0,
+        XCTAssertEqual(sequence.toData().map { $0 }, [
+            30, 7,
             0b0001_1101, 4, 3, 7, 77, 97, 120,
             0b0001_1101, 6, 8, 87, 255, 254, 77, 97, 120,
             0b1101_0001, 7,
@@ -284,9 +270,8 @@ final class BeadsSwiftTests: XCTestCase {
             sequence.appendCompact($0)
         }
 
-        XCTAssertEqual(sequence.data.map { $0 }, [
-            15, 0,
-            2, 0,
+        XCTAssertEqual(sequence.toData().map { $0 }, [
+            11, 2,
             0b0001_1101, 8, 32, 1, 1, 1, 2, 1, 3, 1, 4
             ])
     }
@@ -298,9 +283,8 @@ final class BeadsSwiftTests: XCTestCase {
         sequence.append(7)
         sequence.appendCompact("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.".data(using: .unicode))
 
-        XCTAssertEqual(sequence.data.map { $0 }, [
-            0, 3,
-            7, 0,
+        XCTAssertEqual(sequence.toData().map { $0 }, [
+            252, 2, 7, 0,
             0b0001_1101, 4, 3, 7, 77, 97, 120,
             0b0001_1101, 6, 8, 87, 255, 254, 77, 97, 120,
             0b1101_0001, 7,
@@ -635,10 +619,10 @@ final class BeadsSwiftTests: XCTestCase {
         for i in 0...1000 {
             sequence.append(i)
         }
-        let data = sequence.data
+        let data = sequence.toData()
 
-        let s1 = try BeadsSequence.from(data: data)
-        XCTAssertEqual(data, s1.data)
+        var s1 = try BeadsSequence.from(data: data)
+        XCTAssertEqual(data, s1.toData())
     }
 
     func testAppendLargeAmountOfItems() {
@@ -647,12 +631,12 @@ final class BeadsSwiftTests: XCTestCase {
         for _ in 0...UInt16.max {
             sequence.append(i)
         }
-        let data = sequence.data
+        let data = sequence.toData()
         print(data.count)
         XCTAssertEqual(data.count, (Int(UInt16.max) / 2 + 8) + 1 )
-        let prefix = sequence.data[...8].map{ $0 }
+        let prefix = data[...8].map{ $0 }
         prefix.withUnsafeBytes{
-            XCTAssertEqual(Int($0.bindMemory(to: UInt32.self).baseAddress!.pointee), (Int(UInt16.max) / 2 + 8) + 1 )
+            XCTAssertEqual(Int($0.bindMemory(to: UInt32.self).baseAddress!.pointee), (Int(UInt16.max) / 2) + 1 )
             XCTAssertEqual(Int($0.bindMemory(to: UInt32.self).baseAddress!.advanced(by: 1).pointee), Int(UInt16.max) + 1)
         }
     }
@@ -663,12 +647,12 @@ final class BeadsSwiftTests: XCTestCase {
 //        for _ in 0...UInt32.max {
 //            sequence.append(i)
 //        }
-//        let data = sequence.data
+//        let data = sequence.data()
 //        print(data.count)
 //        XCTAssertEqual(data.count, (Int(UInt32.max) / 2 + 16) + 1 )
-//        let prefix = sequence.data[...16].map{ $0 }
+//        let prefix = data[...16].map{ $0 }
 //        prefix.withUnsafeBytes{
-//            XCTAssertEqual(Int($0.bindMemory(to: UInt64.self).baseAddress!.pointee), (Int(UInt32.max) / 2 + 16) + 1 )
+//            XCTAssertEqual(Int($0.bindMemory(to: UInt64.self).baseAddress!.pointee), (Int(UInt32.max) / 2) + 1 )
 //            XCTAssertEqual(Int($0.bindMemory(to: UInt64.self).baseAddress!.advanced(by: 1).pointee), Int(UInt32.max) + 1)
 //        }
 //    }
@@ -678,29 +662,27 @@ final class BeadsSwiftTests: XCTestCase {
         var sum = 0
         self.measure {
             for i in 0...1_000_000 {
-                sequence.append(i)
+                sequence.append(UInt8(i % 255))
             }
-            //            let subSeq = sequence.lazy.dropFirst(10_000)
             for n in sequence {
                 sum += n.int!
             }
         }
-        XCTAssertEqual(sum, 27500027500000)
+        XCTAssertEqual(sum, 6984569350)
     }
 
     func testPerformanceComaprison() {
-        var sequence = [Int]()
+        var sequence = [UInt8]()
         var sum = 0
         self.measure {
             for i in 0...1_000_000 {
-                sequence.append(i)
+                sequence.append(UInt8(i % 255))
             }
-            let subSeq = sequence.lazy.dropFirst(10_000)
-            for n in subSeq {
-                sum += n
+            for n in sequence {
+                sum += Int(n)
             }
         }
-        XCTAssertEqual(sum, 27499527550000)
+        XCTAssertEqual(sum, 6984569350)
     }
 
 
