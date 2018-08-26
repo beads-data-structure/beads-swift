@@ -250,14 +250,14 @@ public struct BeadsSequence {
             return
         }
 
-        if let i32 = Int32(exactly: newElement) {
-            append(i32)
+        if let i16 = Int16(exactly: newElement) {
+            append(i16)
             return
         }
 
-        if let u32 = UInt32(exactly: newElement) {
-            set(beadType: BeadType.u32)
-            put(int: u32)
+        if let u16 = UInt16(exactly: newElement) {
+            set(beadType: BeadType.u16)
+            put(int: u16)
             return
         }
 
@@ -276,14 +276,14 @@ public struct BeadsSequence {
             return
         }
 
-        if let i64 = Int64(exactly: newElement) {
-            append(i64)
+        if let i32 = Int32(exactly: newElement) {
+            append(i32)
             return
         }
 
-        if let u64 = UInt64(exactly: newElement) {
-            set(beadType: BeadType.u64)
-            put(int: u64)
+        if let u32 = UInt32(exactly: newElement) {
+            set(beadType: BeadType.u32)
+            put(int: u32)
             return
         }
 
